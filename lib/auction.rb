@@ -1,8 +1,11 @@
+require 'date'
+
 class Auction
-  attr_reader :items
+  attr_reader :items, :date
 
   def initialize
     @items = []
+    @date = Date.today.strftime("%d%m%Y")
   end
 
   def add_item(item)
@@ -52,5 +55,13 @@ class Auction
       end
     end
     info
+  end
+
+  def close_auction
+    auction = Hash.new('Not Sold')
+    items.each do |item|
+      auction[item] = item.bids.key(item.bids.values.max)
+    end
+    auction
   end
 end

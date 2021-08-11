@@ -1,6 +1,7 @@
 require './lib/auction'
 require './lib/attendee'
 require './lib/item'
+require 'date'
 require 'rspec'
 
 describe Auction do
@@ -15,6 +16,12 @@ describe Auction do
 
     it 'starts with no items' do
       expect(@auction.items).to eq([])
+    end
+
+    it 'has a date' do
+      date = double('date')
+
+      allow(date).to receive(:date).and_return("24/02/2020")
     end
   end
 
@@ -89,8 +96,8 @@ describe Auction do
     end
 
     it 'has a list of bidders' do
-      @item1.add_bid(@attendee1, 20)
-      @item1.add_bid(@attendee2, 22)
+      @item1.add_bid(@attendee1, 22)
+      @item1.add_bid(@attendee2, 20)
       @item4.add_bid(@attendee3, 50)
       @item3.add_bid(@attendee2, 15)
 
@@ -98,8 +105,8 @@ describe Auction do
     end
 
     it 'has bidder info' do
-      @item1.add_bid(@attendee1, 20)
-      @item1.add_bid(@attendee2, 22)
+      @item1.add_bid(@attendee1, 22)
+      @item1.add_bid(@attendee2, 20)
       @item4.add_bid(@attendee3, 50)
       @item3.add_bid(@attendee2, 15)
 
@@ -109,6 +116,25 @@ describe Auction do
         @attendee3 => {budget: 100, items: [@item4]}
       }
       expect(@auction.bidder_info).to eq(expected)
+    end
+
+    it 'can close' do
+      @item1.add_bid(@attendee1, 22)
+      @item1.add_bid(@attendee2, 20)
+      @item4.add_bid(@attendee2, 30)
+      @item4.add_bid(@attendee3, 50)
+      @item3.add_bid(@attendee2, 15)
+      @item5.add_bid(@attendee1, 35)
+
+      expected = {
+        @item1 => @attendee1,
+        @item2 => 'Not Sold',
+        @item3 => @attendee2,
+        @item4 => @attendee3,
+        @item5 => @attendee1
+      }
+
+      expect(@auction.close_auction).to eq(expected)
     end
   end
 end
