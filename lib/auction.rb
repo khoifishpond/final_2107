@@ -32,4 +32,25 @@ class Auction
       item.current_high_bid
     end
   end
+
+  def bidders
+    bidder_names = []
+    items_with_bids.each do |item|
+      item.bids.each_key do |attendee|
+        bidder_names << attendee.name
+      end
+    end
+    bidder_names.uniq
+  end
+
+  def bidder_info
+    info = {}
+    items_with_bids.each do |item|
+      item.bids.each_key do |bidder|
+        info[bidder] ||= {budget: bidder.budget, items: []}
+        info[bidder][:items] << item
+      end
+    end
+    info
+  end
 end
