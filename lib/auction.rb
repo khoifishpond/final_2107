@@ -58,9 +58,13 @@ class Auction
   end
 
   def close_auction
-    auction = Hash.new('Not Sold')
+    auction = {}
     items.each do |item|
+      if item.bids == {}
+        auction[item] = "Not Sold"
+      else
       auction[item] = item.bids.key(item.bids.values.max)
+      end
     end
     auction
   end
